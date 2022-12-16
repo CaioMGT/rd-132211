@@ -5,7 +5,7 @@ using UnityEngine;
 public class MovementRigidbody : MonoBehaviour {
     [SerializeField] Rigidbody player;
 
-    [SerializeField] float speed;
+    float speed;
 
     // Velocidade andando
     float walking = 4.317f;

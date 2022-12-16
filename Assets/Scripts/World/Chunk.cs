@@ -20,8 +20,6 @@ public class Chunk : MonoBehaviour {
 
     int verticesCount;
 
-    //public static int ChunkWidth = 16;
-    //public static int ChunkHeight = 64;
     public static Vector3Int ChunkSize = new Vector3Int(
         16, 
         64, 
@@ -86,7 +84,6 @@ public class Chunk : MonoBehaviour {
         float _z = z + transform.position.z;
 
         _x += (World.WorldSize.x * ChunkSize.x);
-        //_y += (World.WorldSize.y * ChunkSize.y);
         _z += (World.WorldSize.z * ChunkSize.z);
 
         if(_y < 32) {

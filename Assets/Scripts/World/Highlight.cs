@@ -7,7 +7,6 @@ public class Highlight : MonoBehaviour {
 
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
-    //List<Vector2> uv = new List<Vector2>();
 
     public enum BlockSide {
         EAST,
@@ -19,8 +18,6 @@ public class Highlight : MonoBehaviour {
     }
 
     int verticesCount;
-
-    //[SerializeField] BlockType blockType;    
     
     void Start() {
         mesh = new Mesh();
@@ -31,33 +28,6 @@ public class Highlight : MonoBehaviour {
     }
 
     void Update() {
-        //GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-        
-        /*
-        float r = 1.0f;
-        float g = 1.0f;
-        float b = 1.0f;
-        float a = 0.5f;
-
-        GetComponent<MeshRenderer>().material.color = new Color(r, g, b, a);
-        */
-
-        /*
-        Color color = Color.white;
-        color.a = 0.5f;  
-
-        GetComponent<MeshRenderer>().material.color = color;
-        //*/
-
-        /*
-        Color color;
-
-        ColorUtility.TryParseHtmlString("#0094FF", out color);
-        color.a = 0.5f;
-
-        GetComponent<MeshRenderer>().material.color = color;
-        */
-
         Color colorA = Color.white;
         colorA.a = 0.5f;
 
@@ -72,12 +42,10 @@ public class Highlight : MonoBehaviour {
     void MeshGen() {
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
-        //mesh.uv = uv.ToArray();
 
         mesh.RecalculateNormals();
         mesh.Optimize();
 
-        //GetComponent<MeshCollider>().sharedMesh = mesh;
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
@@ -89,33 +57,6 @@ public class Highlight : MonoBehaviour {
         VerticesGen(BlockSide.NORTH);
         VerticesGen(BlockSide.SOUTH);
     }
-
-    /*
-    void UVsGen(Vector2 textureCoordinate) {
-        float offsetX = 0;
-        float offsetY = 0;
-        
-        float x = textureCoordinate.x + offsetX;
-        float y = textureCoordinate.y + offsetY;
-
-        float textureSizeX = 16 + offsetX;
-        float textureSizeY = 16 + offsetY;
-
-        float _x = 1.0f / textureSizeX;
-        float _y = 1.0f / textureSizeY;
-
-        float invertY = textureSizeY - 1;
-        y = invertY - y;
-
-        x *= _x;
-        y *= _y;
-
-        uv.Add(new Vector2(x, y));
-        uv.Add(new Vector2(x, y + _y));
-        uv.Add(new Vector2(x + _x, y + _y));
-        uv.Add(new Vector2(x + _x, y));
-    }
-    */
 
     void TrianglesGen() {
         // Primeiro Tiangulo
@@ -184,23 +125,5 @@ public class Highlight : MonoBehaviour {
         }
 
         TrianglesGen();
-
-        //UVsPositionsGen();
     }
-
-    /*
-    void UVsPositionsGen() {
-        // Pre-Classic | rd-132211
-        
-        // STONE
-        if(blockType == BlockType.stone) {
-            UVsGen(new Vector2(1, 0));
-        }
-
-        // GRASS BLOCK
-        if(blockType == BlockType.grass_block) {
-            UVsGen(new Vector2(0, 0));
-        }
-    }
-    */
 }
