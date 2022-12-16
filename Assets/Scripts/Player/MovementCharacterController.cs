@@ -53,9 +53,9 @@ public class MovementCharacterController : MonoBehaviour {
     }
 
     void Respawn() {
-        int x = Random.Range(-64, 64);
+        int x = Random.Range(-((World.WorldSize.x * Chunk.ChunkSize.x) / 2), ((World.WorldSize.x * Chunk.ChunkSize.x) / 2));
         int y = 64;
-        int z = Random.Range(-64, 64);
+        int z = Random.Range(-((World.WorldSize.z * Chunk.ChunkSize.z) / 2), ((World.WorldSize.z * Chunk.ChunkSize.z) / 2));
 
         if(Input.GetKeyDown(KeyCode.R)) {
             respawning = true;

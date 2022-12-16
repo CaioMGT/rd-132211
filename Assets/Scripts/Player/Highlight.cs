@@ -3,10 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Highlight : MonoBehaviour {
+    GameObject highlight;    
+    MeshFilter meshFilter;
+    MeshRenderer meshRenderer;
+    
     Mesh mesh;
 
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
+
+    [SerializeField] Material material;
+
+    [SerializeField] Transform cam;
+
+    float rangeHit = 5.0f;
+
+    [SerializeField] LayerMask groundMask;
 
     public enum BlockSide {
         EAST,
@@ -20,14 +32,16 @@ public class Highlight : MonoBehaviour {
     int verticesCount;
     
     void Start() {
-        mesh = new Mesh();
-
-        BlockGen();
-
-        MeshGen();
+        CreateGameObject();
+        CreateMesh();
     }
 
     void Update() {
+        HighlightUpdates();
+        ColorUpdate();
+    }
+
+    void ColorUpdate() {
         Color colorA = Color.white;
         colorA.a = 0.5f;
 
@@ -36,7 +50,35 @@ public class Highlight : MonoBehaviour {
 
         float speed = 2;
 
-        GetComponent<MeshRenderer>().material.color = Color.Lerp(colorA, colorB, Mathf.PingPong(Time.time * speed, 1));
+        meshRenderer.material = material;
+        meshRenderer.material.color = Color.Lerp(colorA, colorB, Mathf.PingPong(Time.time * speed, 1));
+    }
+
+    void HighlightUpdates() {
+        RaycastHit hit;
+
+        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+            highlight.SetActive(true);
+
+            Vector3 pointPos = hit.point - hit.normal / 2;
+            
+            highlight.transform.position = new Vector3(
+                Mathf.FloorToInt(pointPos.x),
+                Mathf.FloorToInt(pointPos.y),
+                Mathf.FloorToInt(pointPos.z)
+            );
+        }
+        else {
+            highlight.SetActive(false);          
+        }
+    }
+
+    void CreateMesh() {
+        mesh = new Mesh();
+        mesh.name = "Highlight";
+
+        BlockGen();
+        MeshGen();
     }
 
     void MeshGen() {
@@ -46,16 +88,27 @@ public class Highlight : MonoBehaviour {
         mesh.RecalculateNormals();
         mesh.Optimize();
 
-        GetComponent<MeshFilter>().mesh = mesh;
+        meshFilter.mesh = mesh;
     }
 
     void BlockGen() {
-        VerticesGen(BlockSide.EAST);
-        VerticesGen(BlockSide.WEST);
-        VerticesGen(BlockSide.TOP);
-        VerticesGen(BlockSide.BOTTOM);
-        VerticesGen(BlockSide.NORTH);
-        VerticesGen(BlockSide.SOUTH);
+        // Se eu estiver olhando a face Leste
+            VerticesGen(BlockSide.EAST);
+
+        // Se eu estiver olhando a face Oeste
+            VerticesGen(BlockSide.WEST);
+
+        // Se eu estiver olhando a face de Cima
+            VerticesGen(BlockSide.TOP);
+
+        // Se eu estiver olhando a face de Baixo
+            VerticesGen(BlockSide.BOTTOM);
+
+        // Se eu estivre olhando a face Norte
+            VerticesGen(BlockSide.NORTH);
+
+        // Se eu estiver olhando a face Sul
+            VerticesGen(BlockSide.SOUTH);
     }
 
     void TrianglesGen() {
@@ -125,5 +178,12 @@ public class Highlight : MonoBehaviour {
         }
 
         TrianglesGen();
+    }
+
+    void CreateGameObject() {
+        highlight = new GameObject("Highlight");
+
+        meshFilter = (MeshFilter)highlight.AddComponent(typeof(MeshFilter));
+        meshRenderer = (MeshRenderer)highlight.AddComponent(typeof(MeshRenderer));
     }
 }

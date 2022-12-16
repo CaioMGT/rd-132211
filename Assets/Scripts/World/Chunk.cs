@@ -108,6 +108,7 @@ public class Chunk : MonoBehaviour {
 
     void ChunkRenderer() {
         mesh = new Mesh();
+        mesh.name = "Chunk";
 
         vertices.Clear();
         triangles.Clear();

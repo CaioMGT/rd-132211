@@ -8,9 +8,6 @@ public class DestroyAddBlocks : MonoBehaviour {
     float rangeHit = 5.0f;
 
     [SerializeField] LayerMask groundMask;
-
-    [SerializeField] GameObject Highlight;
-    [SerializeField] Transform HighlightPos;
     
     void Start() {
         
@@ -18,7 +15,6 @@ public class DestroyAddBlocks : MonoBehaviour {
 
     void Update() {
         HitUpdates();
-        HighlightUpdates();
     }
 
     void HitUpdates() {
@@ -28,13 +24,6 @@ public class DestroyAddBlocks : MonoBehaviour {
             bool drestroyingBlock = Input.GetMouseButtonDown(1);
             bool addingBlock = Input.GetMouseButtonDown(0);
             
-            if(
-                addingBlock &&
-                this.transform.position.y - 1 > Chunk.ChunkSize.y
-            ) {
-                return;
-            }
-
             Vector3 pointPos = (
                 drestroyingBlock
                     ? hit.point - hit.normal / 2
@@ -51,13 +40,20 @@ public class DestroyAddBlocks : MonoBehaviour {
                 c.SetBlock(pointPos, BlockType.air);
             }
 
+            if(
+                addingBlock &&
+                this.transform.position.y - 1 > Chunk.ChunkSize.y
+            ) {
+                return;
+            }
+
             bool isValidPosition = 
                 Vector3.Distance(
                     this.transform.position, pointPos
-                ) > 0.8f &&
+                ) > 1.0f &&
                 Vector3.Distance(
                     cam.position, pointPos
-                ) > 0.8f;
+                ) > 1.0f;
 
             if(addingBlock && isValidPosition) {
                 Chunk c = Chunk.GetChunk(
@@ -68,25 +64,6 @@ public class DestroyAddBlocks : MonoBehaviour {
 
                 c.SetBlock(pointPos, BlockType.stone);
             }
-        }
-    }
-
-    void HighlightUpdates() {
-        RaycastHit hit;
-
-        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
-            Highlight.SetActive(true);
-
-            Vector3 pointPos = hit.point - hit.normal / 2;
-            
-            HighlightPos.position = new Vector3(
-                Mathf.FloorToInt(pointPos.x),
-                Mathf.FloorToInt(pointPos.y),
-                Mathf.FloorToInt(pointPos.z)
-            );
-        }
-        else {
-            Highlight.SetActive(false);          
         }
     }
 }
