@@ -4,7 +4,7 @@ using UnityEngine;
 
 // Destruir e Colocar?
 // Destruir e Adicionar?
-public class DestroyAdd : MonoBehaviour {
+public class DestroyAddBlocks : MonoBehaviour {
     [SerializeField] Transform cam;
 
     float rangeHit = 5.0f;
@@ -20,6 +20,7 @@ public class DestroyAdd : MonoBehaviour {
 
     void Update() {
         HitUpdates();
+        HighlightUpdates();
     }
 
     void HitUpdates() {
@@ -95,7 +96,39 @@ public class DestroyAdd : MonoBehaviour {
             }
             */
 
+            /*
             Highlight.SetActive(true);
+
+            pointPos = hit.point - hit.normal / 2;
+            
+            HighlightPos.position = new Vector3(
+                Mathf.FloorToInt(pointPos.x),
+                Mathf.FloorToInt(pointPos.y),
+                Mathf.FloorToInt(pointPos.z)
+            );
+            */
+        }
+        /*
+        else {
+            Highlight.SetActive(false);            
+            
+            
+            //HighlightPos.position = new Vector3(
+            //    0,
+            //    0,
+            //    0
+            //);      
+        }
+        */
+    }
+
+    void HighlightUpdates() {
+        RaycastHit hit;
+
+        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+            Highlight.SetActive(true);
+
+            Vector3 pointPos = hit.point - hit.normal / 2;
             
             HighlightPos.position = new Vector3(
                 Mathf.FloorToInt(pointPos.x),

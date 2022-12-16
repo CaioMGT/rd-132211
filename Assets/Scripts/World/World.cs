@@ -48,13 +48,13 @@ public class World : MonoBehaviour {
                         Mathf.FloorToInt(chunkOffset.z)
                     );
 
-                    /*
+                    //*
                     if(c == null) {
                         Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
                     }
                     //*/
 
-                    //*  
+                    /*  
                     if(
                         (x + posX) >= -WorldSize.x || (x + posX) <= WorldSize.x ||
                         (z + posZ) >= -WorldSize.z || (z + posZ) <= WorldSize.z
@@ -68,12 +68,12 @@ public class World : MonoBehaviour {
                     }
                     //*/
 
-                    //yield return null;
+                    yield return null;
                     
                     //Debug.Log("x, z = " + x + ", " + z);
                     //Debug.Log("x, z = " + posX + ", " + posZ);
-                    Debug.Log("x, z = " + (x + posX) + ", " + (z + posZ));
-                    Debug.Log("World Size = " + (WorldSize.x) + ", " + (WorldSize.z));
+                    //Debug.Log("x, z = " + (x + posX) + ", " + (z + posZ));
+                    //Debug.Log("World Size = " + (WorldSize.x) + ", " + (WorldSize.z));
                     //Debug.Log("x, z = " + chunkOffset.x + ", " + chunkOffset.z);
                 }
             }

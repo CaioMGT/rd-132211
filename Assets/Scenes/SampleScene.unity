@@ -215,12 +215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad00846428391bc4bb756fef51bac896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1227556433}
-  rangeHit: 5
-  groundMask:
-    m_Bits: 512
-  Highlight: {fileID: 1332068342}
-  HighlightPos: {fileID: 1332068343}
 --- !u!1 &384565765
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +434,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 536737049}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cc20289bb31cf94c8cc17ec3dbe2add, type: 3}
+  m_Script: {fileID: 11500000, guid: 4befb7823b47f1f4ea4b36b8c95cb2ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 426286025}
