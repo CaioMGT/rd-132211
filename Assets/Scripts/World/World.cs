@@ -11,8 +11,6 @@ public class World : MonoBehaviour {
         ((256 / Chunk.ChunkSize.z) / 2)
     );
 
-    int[,,] chunkData = new int[WorldSize.x, WorldSize.y, WorldSize.z];
-
     [SerializeField] Transform player;
 
     int viewDistance = 2;
@@ -29,28 +27,26 @@ public class World : MonoBehaviour {
         int posX = Mathf.FloorToInt(player.position.x / Chunk.ChunkSize.x);
         int posZ = Mathf.FloorToInt(player.position.z / Chunk.ChunkSize.z);
 
-        for(int x = 0; x < viewDistance; x++) {
+        for(int x = -viewDistance; x < viewDistance; x++) {
             for(int y = 0; y < WorldSize.y; y++) {
-                for(int z = 0; z < viewDistance; z++) {
-                    if(chunkData[x, y, z] != 0) {
-                        Vector3 chunkOffset = new Vector3(
-                            (x + posX) * Chunk.ChunkSize.x,
-                            y * Chunk.ChunkSize.y,
-                            (z + posZ) * Chunk.ChunkSize.z
-                        );
+                for(int z = -viewDistance; z < viewDistance; z++) {
+                    Vector3 chunkOffset = new Vector3(
+                        (x + posX) * Chunk.ChunkSize.x,
+                        y * Chunk.ChunkSize.y,
+                        (z + posZ) * Chunk.ChunkSize.z
+                    );
 
-                        Chunk c = Chunk.GetChunk(
-                            Mathf.FloorToInt(chunkOffset.x),
-                            Mathf.FloorToInt(chunkOffset.y),
-                            Mathf.FloorToInt(chunkOffset.z)
-                        );
+                    Chunk c = Chunk.GetChunk(
+                        Mathf.FloorToInt(chunkOffset.x),
+                        Mathf.FloorToInt(chunkOffset.y),
+                        Mathf.FloorToInt(chunkOffset.z)
+                    );
 
-                        if(c == null) {
-                            Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
-                        }
-
-                        yield return null;
+                    if(c == null) {
+                        Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
                     }
+
+                    yield return null;
                 }
             }
         }
