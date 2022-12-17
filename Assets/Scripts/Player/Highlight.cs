@@ -15,12 +15,10 @@ public class Highlight : MonoBehaviour {
     [SerializeField] Material material;
 
     [SerializeField] Transform cam;
-
     float rangeHit = 5.0f;
-
     [SerializeField] LayerMask groundMask;
 
-    public enum BlockSide {
+    enum BlockSide {
         EAST,
         WEST,
         TOP,
@@ -42,10 +40,10 @@ public class Highlight : MonoBehaviour {
     }
 
     void ColorUpdate() {
-        Color colorA = Color.white;
+        Color colorA = material.color;
         colorA.a = 0.5f;
 
-        Color colorB = Color.white;
+        Color colorB = material.color;
         colorB.a = 0.0f;
 
         float speed = 2;
@@ -152,10 +150,10 @@ public class Highlight : MonoBehaviour {
                 break;
             }
             case BlockSide.BOTTOM: {
-                vertices.Add(new Vector3(0, 0, 1));
-                vertices.Add(new Vector3(0, 0, 0));
                 vertices.Add(new Vector3(1, 0, 0));
                 vertices.Add(new Vector3(1, 0, 1));
+                vertices.Add(new Vector3(0, 0, 1));
+                vertices.Add(new Vector3(0, 0, 0));
 
                 break;
             }

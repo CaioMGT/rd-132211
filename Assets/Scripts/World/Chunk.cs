@@ -147,17 +147,18 @@ public class Chunk : MonoBehaviour {
         int z = (int)offset.z;
 
         if(
-            x < 0 || x >= ChunkSize.x ||
-            y < 0 || y >= ChunkSize.y ||
-            z < 0 || z >= ChunkSize.z
+            x < 0 || x > ChunkSize.x - 1 ||
+            y < 0 || y > ChunkSize.y - 1 ||
+            z < 0 || z > ChunkSize.z - 1
         ) {
             return false;
         }
         if(blockData[x, y, z] == BlockType.air) {
             return false;
         }
-
-        return true;
+        else {
+            return true;
+        }        
     }
 
     void BlockGen(Vector3 offset) {
@@ -253,10 +254,10 @@ public class Chunk : MonoBehaviour {
                 break;
             }
             case BlockSide.BOTTOM: {
-                vertices.Add(new Vector3(0, 0, 1) + offset);
-                vertices.Add(new Vector3(0, 0, 0) + offset);
                 vertices.Add(new Vector3(1, 0, 0) + offset);
                 vertices.Add(new Vector3(1, 0, 1) + offset);
+                vertices.Add(new Vector3(0, 0, 1) + offset);
+                vertices.Add(new Vector3(0, 0, 0) + offset);
 
                 break;
             }

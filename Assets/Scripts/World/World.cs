@@ -5,25 +5,61 @@ using UnityEngine;
 public class World : MonoBehaviour {
     [SerializeField] GameObject chunkPrefab;
 
+    public static Vector3Int WorldSizeInBlocks = new Vector3Int(
+        256,
+        64,
+        256
+    );
+    
     public static Vector3Int WorldSize = new Vector3Int(
-        ((256 / Chunk.ChunkSize.x) / 2),
-        1,
-        ((256 / Chunk.ChunkSize.z) / 2)
+        WorldSizeInBlocks.x / Chunk.ChunkSize.x,
+        WorldSizeInBlocks.y / Chunk.ChunkSize.y,
+        WorldSizeInBlocks.z / Chunk.ChunkSize.z
     );
 
     [SerializeField] Transform player;
 
-    int viewDistance = 2;
+    int viewDistance = 5;
 
     void Start() {
-        
+        InitialWorldGen();
     }
 
     void Update() {
         StartCoroutine(WorldGen());
     }
 
+    void InitialWorldGen() {
+        int r2 = viewDistance * viewDistance;
+
+        for(int x = -viewDistance; x < viewDistance; x++) {
+            for(int y = 0; y < WorldSize.y; y++) {
+                for(int z = -viewDistance; z < viewDistance; z++) {
+                    Vector3 chunkOffset = new Vector3(
+                        x * Chunk.ChunkSize.x,
+                        y * Chunk.ChunkSize.y,
+                        z * Chunk.ChunkSize.z
+                    );
+
+                    if(new Vector3(x, y, z).sqrMagnitude < r2) {
+                        Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
+                    }
+                }
+            }
+        }
+
+        Vector3 spawn = new Vector3(
+            0,
+            WorldSizeInBlocks.y,
+            0
+        );
+        
+        player.position = spawn;
+    }
+
     IEnumerator WorldGen() {
+        int r2 = viewDistance * viewDistance;
+
         int posX = Mathf.FloorToInt(player.position.x / Chunk.ChunkSize.x);
         int posZ = Mathf.FloorToInt(player.position.z / Chunk.ChunkSize.z);
 
@@ -43,7 +79,9 @@ public class World : MonoBehaviour {
                     );
 
                     if(c == null) {
-                        Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
+                        if(new Vector3(x, y, z).sqrMagnitude < r2) {
+                            Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
+                        }
                     }
 
                     yield return null;
