@@ -31,11 +31,11 @@ public class DestroyAddBlocks : MonoBehaviour {
             );
 
             if(drestroyingBlock) {
-                Chunk c = Chunk.GetChunk(
+                Chunk c = Chunk.GetChunk(new Vector3(
                     Mathf.FloorToInt(pointPos.x),
                     Mathf.FloorToInt(pointPos.y),
                     Mathf.FloorToInt(pointPos.z)
-                );
+                ));
 
                 c.SetBlock(pointPos, BlockType.air);
             }
@@ -56,11 +56,11 @@ public class DestroyAddBlocks : MonoBehaviour {
                 ) > 1.0f;
 
             if(addingBlock && isValidPosition) {
-                Chunk c = Chunk.GetChunk(
+                Chunk c = Chunk.GetChunk(new Vector3(
                     Mathf.FloorToInt(pointPos.x),
                     Mathf.FloorToInt(pointPos.y),
                     Mathf.FloorToInt(pointPos.z)
-                );
+                ));
 
                 c.SetBlock(pointPos, BlockType.stone);
             }

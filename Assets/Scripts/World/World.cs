@@ -30,8 +30,6 @@ public class World : MonoBehaviour {
     }
 
     void InitialWorldGen() {
-        int r2 = viewDistance * viewDistance;
-
         for(int x = -viewDistance; x < viewDistance; x++) {
             for(int y = 0; y < WorldSize.y; y++) {
                 for(int z = -viewDistance; z < viewDistance; z++) {
@@ -40,6 +38,8 @@ public class World : MonoBehaviour {
                         y * Chunk.ChunkSize.y,
                         z * Chunk.ChunkSize.z
                     );
+
+                    int r2 = viewDistance * viewDistance;
 
                     if(new Vector3(x, y, z).sqrMagnitude < r2) {
                         Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
@@ -54,12 +54,10 @@ public class World : MonoBehaviour {
             0
         );
         
-        player.position = spawn;
+        //player.position = spawn;
     }
 
     IEnumerator WorldGen() {
-        int r2 = viewDistance * viewDistance;
-
         int posX = Mathf.FloorToInt(player.position.x / Chunk.ChunkSize.x);
         int posZ = Mathf.FloorToInt(player.position.z / Chunk.ChunkSize.z);
 
@@ -72,13 +70,15 @@ public class World : MonoBehaviour {
                         (z + posZ) * Chunk.ChunkSize.z
                     );
 
-                    Chunk c = Chunk.GetChunk(
+                    Chunk c = Chunk.GetChunk(new Vector3(
                         Mathf.FloorToInt(chunkOffset.x),
                         Mathf.FloorToInt(chunkOffset.y),
                         Mathf.FloorToInt(chunkOffset.z)
-                    );
+                    ));
 
                     if(c == null) {
+                        int r2 = viewDistance * viewDistance;
+
                         if(new Vector3(x, y, z).sqrMagnitude < r2) {
                             Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
                         }

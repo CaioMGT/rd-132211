@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Highlight : MonoBehaviour {
-    GameObject highlight;    
+    [SerializeField] GameObject highlight;
+        
     MeshFilter meshFilter;
     MeshRenderer meshRenderer;
     
@@ -18,7 +19,7 @@ public class Highlight : MonoBehaviour {
     float rangeHit = 5.0f;
     [SerializeField] LayerMask groundMask;
 
-    enum BlockSide {
+    enum HighlighSide {
         EAST,
         WEST,
         TOP,
@@ -30,8 +31,14 @@ public class Highlight : MonoBehaviour {
     int verticesCount;
     
     void Start() {
-        CreateGameObject();
-        CreateMesh();
+        meshFilter = (MeshFilter)highlight.AddComponent(typeof(MeshFilter));
+        meshRenderer = (MeshRenderer)highlight.AddComponent(typeof(MeshRenderer));
+
+        mesh = new Mesh();
+        mesh.name = "Highlight";
+
+        HighlighGen();
+        MeshGen();
     }
 
     void Update() {
@@ -71,14 +78,6 @@ public class Highlight : MonoBehaviour {
         }
     }
 
-    void CreateMesh() {
-        mesh = new Mesh();
-        mesh.name = "Highlight";
-
-        BlockGen();
-        MeshGen();
-    }
-
     void MeshGen() {
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
@@ -89,24 +88,78 @@ public class Highlight : MonoBehaviour {
         meshFilter.mesh = mesh;
     }
 
-    void BlockGen() {
-        // Se eu estiver olhando a face Leste
-            VerticesGen(BlockSide.EAST);
+    /*
+    bool PointBlock(Vector3 pointPos) {
+        RaycastHit hit;
 
-        // Se eu estiver olhando a face Oeste
-            VerticesGen(BlockSide.WEST);
+        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+            pointPos = hit.point - hit.normal / 2;
 
-        // Se eu estiver olhando a face de Cima
-            VerticesGen(BlockSide.TOP);
+            return false;
+        }
+        else {
+            return true;
+        }                  
+    }
+    //*/
 
-        // Se eu estiver olhando a face de Baixo
-            VerticesGen(BlockSide.BOTTOM);
+    void HighlighGen() {
+        /*
+        RaycastHit hit;
 
-        // Se eu estivre olhando a face Norte
-            VerticesGen(BlockSide.NORTH);
+        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+            Vector3 pointPos = hit.point - hit.normal / 2;
 
-        // Se eu estiver olhando a face Sul
-            VerticesGen(BlockSide.SOUTH);
+            if(pointPos == new Vector3(1, 0, 0)) {
+                VerticesGen(HighlighSide.EAST);
+            }
+            if(pointPos == new Vector3(-1, 0, 0)) {
+                VerticesGen(HighlighSide.WEST);
+            }
+            if(pointPos == new Vector3(0, 1, 0)) {
+                VerticesGen(HighlighSide.TOP);
+            }
+            if(pointPos == new Vector3(0, -1, 0)) {
+                VerticesGen(HighlighSide.BOTTOM);
+            }
+            if(pointPos == new Vector3(0, 0, 1)) {
+                VerticesGen(HighlighSide.NORTH);
+            }
+            if(pointPos == new Vector3(0, 0, -1)) {
+                VerticesGen(HighlighSide.SOUTH);
+            }
+        }   
+        */     
+        
+        /*
+        if(PointBlock(new Vector3(1, 0, 0))) {
+            VerticesGen(HighlighSide.EAST);
+        }
+        if(PointBlock(new Vector3(-1, 0, 0))) {
+            VerticesGen(HighlighSide.WEST);
+        }
+        if(PointBlock(new Vector3(0, 1, 0))) {
+            VerticesGen(HighlighSide.TOP);
+        }
+        if(PointBlock(new Vector3(0, -1, 0))) {
+            VerticesGen(HighlighSide.BOTTOM);
+        }
+        if(PointBlock(new Vector3(0, 0, 1))) {
+            VerticesGen(HighlighSide.NORTH);
+        }
+        if(PointBlock(new Vector3(0, 0, -1))) {
+            VerticesGen(HighlighSide.SOUTH);
+        }
+        */
+
+        //*
+        VerticesGen(HighlighSide.EAST);
+        VerticesGen(HighlighSide.WEST);
+        VerticesGen(HighlighSide.TOP);
+        VerticesGen(HighlighSide.BOTTOM);
+        VerticesGen(HighlighSide.NORTH);
+        VerticesGen(HighlighSide.SOUTH);
+        //*/
     }
 
     void TrianglesGen() {
@@ -123,9 +176,9 @@ public class Highlight : MonoBehaviour {
         verticesCount += 4;
     }
 
-    void VerticesGen(BlockSide side) {
+    void VerticesGen(HighlighSide side) {
         switch(side) {
-            case BlockSide.EAST: {
+            case HighlighSide.EAST: {
                 vertices.Add(new Vector3(1, 0, 0));
                 vertices.Add(new Vector3(1, 1, 0));
                 vertices.Add(new Vector3(1, 1, 1));
@@ -133,7 +186,7 @@ public class Highlight : MonoBehaviour {
 
                 break;
             }
-            case BlockSide.WEST: {
+            case HighlighSide.WEST: {
                 vertices.Add(new Vector3(0, 0, 1));
                 vertices.Add(new Vector3(0, 1, 1));
                 vertices.Add(new Vector3(0, 1, 0));
@@ -141,7 +194,7 @@ public class Highlight : MonoBehaviour {
 
                 break;
             }
-            case BlockSide.TOP: {
+            case HighlighSide.TOP: {
                 vertices.Add(new Vector3(0, 1, 0));
                 vertices.Add(new Vector3(0, 1, 1));
                 vertices.Add(new Vector3(1, 1, 1));
@@ -149,7 +202,7 @@ public class Highlight : MonoBehaviour {
 
                 break;
             }
-            case BlockSide.BOTTOM: {
+            case HighlighSide.BOTTOM: {
                 vertices.Add(new Vector3(1, 0, 0));
                 vertices.Add(new Vector3(1, 0, 1));
                 vertices.Add(new Vector3(0, 0, 1));
@@ -157,7 +210,7 @@ public class Highlight : MonoBehaviour {
 
                 break;
             }
-            case BlockSide.NORTH: {
+            case HighlighSide.NORTH: {
                 vertices.Add(new Vector3(1, 0, 1));
                 vertices.Add(new Vector3(1, 1, 1));
                 vertices.Add(new Vector3(0, 1, 1));
@@ -165,7 +218,7 @@ public class Highlight : MonoBehaviour {
 
                 break;
             }
-            case BlockSide.SOUTH: {
+            case HighlighSide.SOUTH: {
                 vertices.Add(new Vector3(0, 0, 0));
                 vertices.Add(new Vector3(0, 1, 0));
                 vertices.Add(new Vector3(1, 1, 0));
@@ -176,12 +229,5 @@ public class Highlight : MonoBehaviour {
         }
 
         TrianglesGen();
-    }
-
-    void CreateGameObject() {
-        highlight = new GameObject("Highlight");
-
-        meshFilter = (MeshFilter)highlight.AddComponent(typeof(MeshFilter));
-        meshRenderer = (MeshRenderer)highlight.AddComponent(typeof(MeshRenderer));
     }
 }

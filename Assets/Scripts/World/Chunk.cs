@@ -32,7 +32,7 @@ public class Chunk : MonoBehaviour {
 
     public static List<Chunk> chunkData = new List<Chunk>();
 
-    void Start() {
+    void Start() {        
         chunkData.Add(this);
 
         ChunkGen();
@@ -45,18 +45,16 @@ public class Chunk : MonoBehaviour {
     public void SetBlock(Vector3 worldPos, BlockType b) {
         Vector3 localPos = worldPos - transform.position;
 
-        blockData[
-            Mathf.FloorToInt(localPos.x), 
-            Mathf.FloorToInt(localPos.y), 
-            Mathf.FloorToInt(localPos.z)
-        ] = b;
+        int x = Mathf.FloorToInt(localPos.x);
+        int y = Mathf.FloorToInt(localPos.y);
+        int z = Mathf.FloorToInt(localPos.z);
+
+        blockData[x, y, z] = b;
 
         ChunkRenderer();
     }
 
-    public static Chunk GetChunk(int x, int y, int z) {
-        Vector3 pos = new Vector3(x, y, z);
-        
+    public static Chunk GetChunk(Vector3 pos) {
         for(int i = 0; i < chunkData.Count; i++) {            
             Vector3 cpos = chunkData[i].transform.position;
 
@@ -141,10 +139,10 @@ public class Chunk : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    bool HasSolidNeighbor(Vector3 offset) {
-        int x = (int)offset.x;
-        int y = (int)offset.y;
-        int z = (int)offset.z;
+    bool HasAdjacenteBlock(Vector3 adjacentBlock) {
+        int x = (int)adjacentBlock.x;
+        int y = (int)adjacentBlock.y;
+        int z = (int)adjacentBlock.z;
 
         if(
             x < 0 || x > ChunkSize.x - 1 ||
@@ -168,41 +166,44 @@ public class Chunk : MonoBehaviour {
 
         blockType = blockData[x, y, z];
 
-        if(!HasSolidNeighbor(new Vector3(1, 0, 0) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(1, 0, 0) + offset)) {
             VerticesGen(BlockSide.EAST, offset);
         }
-        if(!HasSolidNeighbor(new Vector3(-1, 0, 0) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(-1, 0, 0) + offset)) {
             VerticesGen(BlockSide.WEST, offset);
         }
-        if(!HasSolidNeighbor(new Vector3(0, 1, 0) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(0, 1, 0) + offset)) {
             VerticesGen(BlockSide.TOP, offset);
         }
-        if(!HasSolidNeighbor(new Vector3(0, -1, 0) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(0, -1, 0) + offset)) {
             VerticesGen(BlockSide.BOTTOM, offset);
         }
-        if(!HasSolidNeighbor(new Vector3(0, 0, 1) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(0, 0, 1) + offset)) {
             VerticesGen(BlockSide.NORTH, offset);
         }
-        if(!HasSolidNeighbor(new Vector3(0, 0, -1) + offset)) {
+        if(!HasAdjacenteBlock(new Vector3(0, 0, -1) + offset)) {
             VerticesGen(BlockSide.SOUTH, offset);
         }
     }
 
     void UVsGen(Vector2 textureCoordinate) {
-        float offsetX = 0;
-        float offsetY = 0;
+        Vector2 offset = new Vector2(
+            0, 
+            0
+        );
 
-        float textureSizeX = 16 + offsetX;
-        float textureSizeY = 16 + offsetY;
+        Vector2 textureSize = new Vector2(
+            16 + offset.x,
+            16 + offset.y
+        );
         
-        float x = textureCoordinate.x + offsetX;
-        float y = textureCoordinate.y + offsetY;
+        float x = textureCoordinate.x + offset.x;
+        float y = textureCoordinate.y + offset.y;
 
-        float _x = 1.0f / textureSizeX;
-        float _y = 1.0f / textureSizeY;
+        float _x = 1.0f / textureSize.x;
+        float _y = 1.0f / textureSize.y;
 
-        float invertY = textureSizeY - 1;
-        y = invertY - y;
+        y = (textureSize.y - 1) - y;
 
         x *= _x;
         y *= _y;
