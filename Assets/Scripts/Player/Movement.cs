@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementCharacterController : MonoBehaviour {
+public class Movement : MonoBehaviour {
     [SerializeField] Transform playerTransform;
     bool respawning;
 
@@ -37,8 +37,8 @@ public class MovementCharacterController : MonoBehaviour {
         Respawn();
         
         if(!respawning) {
-            Movement();        
-            JumpMovement();
+            MovementUpdates();        
+            JumpUpdates();
 
             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
@@ -67,7 +67,7 @@ public class MovementCharacterController : MonoBehaviour {
         }
     }
 
-    void Movement() {
+    void MovementUpdates() {
         float x = Input.GetAxis("HorizontalAD");
         float z = Input.GetAxis("VerticalWS");
 
@@ -76,7 +76,7 @@ public class MovementCharacterController : MonoBehaviour {
         player.Move(move * speed * Time.deltaTime);
     }
 
-    void JumpMovement() {
+    void JumpUpdates() {
         // Pressionar Space pula.
         if(Input.GetButton("Space") && isGrounded) {
             isGrounded = false;

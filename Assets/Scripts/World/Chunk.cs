@@ -18,7 +18,7 @@ public class Chunk : MonoBehaviour {
         SOUTH
     }
 
-    int verticesCount;
+    int vertexIndex;
 
     public static Vector3Int ChunkSize = new Vector3Int(
         16, 
@@ -112,7 +112,7 @@ public class Chunk : MonoBehaviour {
         triangles.Clear();
         uv.Clear();
 
-        verticesCount = 0;
+        vertexIndex = 0;
 
         for(int x = 0; x < ChunkSize.x; x++) {
             for(int y = 0; y < ChunkSize.y; y++) {
@@ -216,16 +216,16 @@ public class Chunk : MonoBehaviour {
 
     void TrianglesGen() {
         // Primeiro Tiangulo
-        triangles.Add(0 + verticesCount);
-        triangles.Add(1 + verticesCount);
-        triangles.Add(2 + verticesCount);
+        triangles.Add(0 + vertexIndex);
+        triangles.Add(1 + vertexIndex);
+        triangles.Add(2 + vertexIndex);
 
         // Segundo Triangulo
-        triangles.Add(0 + verticesCount);
-        triangles.Add(2 + verticesCount);
-        triangles.Add(3 + verticesCount);
+        triangles.Add(0 + vertexIndex);
+        triangles.Add(2 + vertexIndex);
+        triangles.Add(3 + vertexIndex);
 
-        verticesCount += 4;
+        vertexIndex += 4;
     }
 
     void VerticesGen(BlockSide side, Vector3 offset) {
