@@ -3,21 +3,73 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DestroyAddBlocks : MonoBehaviour {
-    [SerializeField] Transform cam;
+    [SerializeField] private Transform cam;
 
-    float rangeHit = 5.0f;
+    private float rangeHit = 5.0f;
 
-    [SerializeField] LayerMask groundMask;
+    [SerializeField] private LayerMask groundMask;
     
-    void Start() {
+    private void Start() {
         
     }
 
-    void Update() {
-        HitUpdates();
+    private void Update() {
+        DestroyBlocks();
+        AddBlocks();
+
+        //HitUpdates();
     }
 
-    void HitUpdates() {
+    private void DestroyBlocks() {
+        if(Input.GetMouseButtonDown(1)) {
+            RaycastHit hit;
+
+            if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+                Vector3 pointPos = hit.point - hit.normal / 2;
+
+                Chunk c = Chunk.GetChunk(new Vector3(
+                    Mathf.FloorToInt(pointPos.x),
+                    Mathf.FloorToInt(pointPos.y),
+                    Mathf.FloorToInt(pointPos.z)
+                ));
+
+                c.SetBlock(pointPos, BlockType.air);
+            }
+        }
+    }
+
+    private void AddBlocks() {
+        if(Input.GetMouseButtonDown(0)) {
+            RaycastHit hit;
+
+            if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
+                Vector3 pointPos = hit.point + hit.normal / 2;
+
+                bool isValidPosition = 
+                    // se o valor for abaixo de 0.82f, ainda coloca bloco dentro do player
+                    // a altura do pulo é de 1.2522f
+                    // não ta dando pra colcoar bloco em baixo do player quando pula
+                    Vector3.Distance(this.transform.position, pointPos) > 1.0f &&
+                    Vector3.Distance(cam.position, pointPos) > 1.0f;
+
+                if(this.transform.position.y - 1 > Chunk.ChunkSize.y) {
+                    return;
+                }
+                else if(isValidPosition) {
+                    Chunk c = Chunk.GetChunk(new Vector3(
+                        Mathf.FloorToInt(pointPos.x),
+                        Mathf.FloorToInt(pointPos.y),
+                        Mathf.FloorToInt(pointPos.z)
+                    ));
+
+                    c.SetBlock(pointPos, BlockType.stone);
+                }                
+            }
+        }
+    }
+
+    /*
+    private void HitUpdates() {
         RaycastHit hit;
 
         if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
@@ -48,12 +100,11 @@ public class DestroyAddBlocks : MonoBehaviour {
             }
 
             bool isValidPosition = 
-                Vector3.Distance(
-                    this.transform.position, pointPos
-                ) > 1.0f &&
-                Vector3.Distance(
-                    cam.position, pointPos
-                ) > 1.0f;
+                // se o valor for abaixo de 0.82f, ainda coloca bloco dentro do player
+                // a altura do pulo é de 1.2522f
+                // não ta dando pra colcoar bloco em baixo do player quando pula
+                Vector3.Distance(this.transform.position, pointPos) > 1.0f &&
+                Vector3.Distance(cam.position, pointPos) > 1.0f;
 
             if(addingBlock && isValidPosition) {
                 Chunk c = Chunk.GetChunk(new Vector3(
@@ -66,4 +117,5 @@ public class DestroyAddBlocks : MonoBehaviour {
             }
         }
     }
+    */
 }

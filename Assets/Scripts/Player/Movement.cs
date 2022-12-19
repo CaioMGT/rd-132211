@@ -3,85 +3,120 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour {
-    [SerializeField] Transform playerTransform;
-    bool respawning;
+    [SerializeField] private CharacterController characterController;
 
-    [Space(20)]
-    [SerializeField] CharacterController player;
+    private Vector3 moveDirection;
 
-    float speed;
+    private float speed;
 
     // Velocidade andando
-    float walking = 4.317f;
+    private float walkingSpeed = 4.317f;
     
-    // Altura do pulo
-    float jumpHeight = 1.2522f;
-
-    //float gravity = -9.807f;
+    private Vector3 velocity;
     
     // Velocidade de queda
-    float falling = -78.4f;
+    private float fallSpeed = -78.4f;
 
-    Vector3 velocity;
-    bool isGrounded;
+    private bool isGrounded;
 
-    [SerializeField] Transform groundCheck;
-    float groundDistance = 0.4f;
-    [SerializeField] LayerMask groundMask;
+    [SerializeField] private Transform groundCheck;
+    private float groundDistance = 0.1f;
+    [SerializeField] private LayerMask groundMask;
+    
+    // Altura do pulo
+    private float jumpHeight = 1.2522f;
 
-    void Start() {
-        speed = walking;
+    private float stepOffset = 1.0f;
+
+    private void Start() {
+        CharacterControllerValues();
+
+        speed = walkingSpeed;
     }
 
-    void Update() {
-        Respawn();
+    private void Update() {
+        MovementUpdate();
+        FallUpdate();
+        JumpUpdate();
         
-        if(!respawning) {
-            MovementUpdates();        
-            JumpUpdates();
+        Respawn();
 
-            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-            velocity.y += falling * Time.deltaTime;
-
-            player.Move(velocity * Time.deltaTime);
-
-            if(isGrounded && velocity.y < 0) {
-                velocity.y = -2.0f;
-            }
-        }
+        //StepOffsetUpdate();
     }
 
-    void Respawn() {
-        int x = Random.Range(-((World.WorldSize.x * Chunk.ChunkSize.x) / 2), ((World.WorldSize.x * Chunk.ChunkSize.x) / 2));
-        int y = 64;
-        int z = Random.Range(-((World.WorldSize.z * Chunk.ChunkSize.z) / 2), ((World.WorldSize.z * Chunk.ChunkSize.z) / 2));
-
-        if(Input.GetKeyDown(KeyCode.R)) {
-            respawning = true;
-
-            playerTransform.position = new Vector3(x, y, z);
-        }
-        else {
-            respawning = false;
-        }
+    private void CharacterControllerValues() {
+        // Se Step Offset for maior que 0.0f, o jogador não passara por uma altura de 2 blocos.
+        characterController.stepOffset = 0.0f;
+        characterController.center = new Vector3(0.0f, 0.9f, 0.0f);
+        characterController.radius = 0.3f;
+        characterController.height = 1.8f;
     }
 
-    void MovementUpdates() {
+    private void MovementUpdate() {
+        // Obtenha a entrada do usuário
         float x = Input.GetAxis("HorizontalAD");
         float z = Input.GetAxis("VerticalWS");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        // Crie um vetor de movimento na direção em que o jogador está olhando
+        moveDirection = transform.TransformDirection(new Vector3(x, 0.0f, z));
 
-        player.Move(move * speed * Time.deltaTime);
+        // Ajuste a velocidade de movimento
+        moveDirection *= speed;
+
+        // Mova o personagem com o Character Controller
+        characterController.Move(moveDirection * Time.deltaTime);
     }
 
-    void JumpUpdates() {
-        // Pressionar Space pula.
-        if(Input.GetButton("Space") && isGrounded) {
+    private void FallUpdate() {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        velocity.y += fallSpeed * Time.deltaTime;
+
+        characterController.Move(velocity * Time.deltaTime);
+
+        if(isGrounded && velocity.y < 0) {
+            velocity.y = -2.0f;
+        }
+    }
+
+    private void JumpUpdate() {
+        // Se o jogador estiver no chão e o usuário pressionar o botão de pulo
+        if(isGrounded && Input.GetButton("Space")) {
             isGrounded = false;
 
-            velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * falling);
+            velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * fallSpeed);
+        }
+    }
+
+    private void Respawn() {
+        // Gera números aleatórios para a posição x e z do jogador
+        /*
+        float x = Random.Range(-((World.WorldSize.x * Chunk.ChunkSize.x) / 2), ((World.WorldSize.x * Chunk.ChunkSize.x) / 2));
+        float z = Random.Range(-((World.WorldSize.z * Chunk.ChunkSize.z) / 2), ((World.WorldSize.z * Chunk.ChunkSize.z) / 2));
+        */
+        float x = Random.Range(-((World.viewDistance * Chunk.ChunkSize.x) / 2), ((World.viewDistance * Chunk.ChunkSize.x) / 2));
+        float z = Random.Range(-((World.viewDistance * Chunk.ChunkSize.z) / 2), ((World.viewDistance * Chunk.ChunkSize.z) / 2));
+        
+        // Cria um vetor de movimento com as novas coordenadas
+        Vector3 respawn = new Vector3(x, 64.0f, z);
+
+        if(Input.GetKeyDown(KeyCode.R)) {
+            /// Aplica a movimentação usando o método Move() do Character Controller
+            characterController.Move(respawn);
+        }
+    }
+
+    private void StepOffsetUpdate() {
+        // Envia um raio para baixo a partir da posição atual do personagem
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, stepOffset)) {
+            // Se o raio colidir com um obstáculo, move o personagem para cima do obstáculo
+            Vector3 newPosition = hit.point + Vector3.up * stepOffset;
+            characterController.Move(newPosition - transform.position);
+        }
+        else {
+            // Se o raio não colidir com nenhum obstáculo, move o personagem normalmente
+            characterController.Move(moveDirection * Time.deltaTime);
         }
     }
 }

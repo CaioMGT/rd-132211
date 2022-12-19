@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour {
-    Mesh mesh;
+    private Mesh mesh;
 
-    List<Vector3> vertices = new List<Vector3>();
-    List<int> triangles = new List<int>();
-    List<Vector2> uv = new List<Vector2>();
+    private List<Vector3> vertices = new List<Vector3>();
+    private List<int> triangles = new List<int>();
+    private List<Vector2> uv = new List<Vector2>();
 
-    public enum BlockSide {        
+    private enum BlockSide {        
         EAST,
         WEST,
         TOP,
@@ -18,7 +18,7 @@ public class Chunk : MonoBehaviour {
         SOUTH
     }
 
-    int vertexIndex;
+    private int vertexIndex;
 
     public static Vector3Int ChunkSize = new Vector3Int(
         16, 
@@ -26,19 +26,19 @@ public class Chunk : MonoBehaviour {
         16
     );
 
-    BlockType[,,] blockData = new BlockType[ChunkSize.x, ChunkSize.y, ChunkSize.z];
+    private BlockType[,,] blockData = new BlockType[ChunkSize.x, ChunkSize.y, ChunkSize.z];
 
-    BlockType blockType;
+    private BlockType blockType;
 
     public static List<Chunk> chunkData = new List<Chunk>();
 
-    void Start() {        
+    private void Start() {        
         chunkData.Add(this);
 
         ChunkGen();
     }
 
-    void Update() {
+    private void Update() {
         
     }
 
@@ -72,7 +72,7 @@ public class Chunk : MonoBehaviour {
         return null;
     }
     
-    void ChunkLayersGen(Vector3 offset) {
+    private void ChunkLayersGen(Vector3 offset) {
         int x = (int)offset.x;
         int y = (int)offset.y;
         int z = (int)offset.z;
@@ -92,7 +92,7 @@ public class Chunk : MonoBehaviour {
         }
     }
 
-    void ChunkGen() {
+    private void ChunkGen() {
         for(int x = 0; x < ChunkSize.x; x++) {
             for(int y = 0; y < ChunkSize.y; y++) {
                 for(int z = 0; z < ChunkSize.z; z++) {
@@ -104,7 +104,7 @@ public class Chunk : MonoBehaviour {
         ChunkRenderer();
     }
 
-    void ChunkRenderer() {
+    private void ChunkRenderer() {
         mesh = new Mesh();
         mesh.name = "Chunk";
 
@@ -127,7 +127,7 @@ public class Chunk : MonoBehaviour {
         MeshGen();
     }
 
-    void MeshGen() {
+    private void MeshGen() {
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.uv = uv.ToArray();
@@ -139,7 +139,7 @@ public class Chunk : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    bool HasAdjacenteBlock(Vector3 adjacentBlock) {
+    private bool HasAdjacenteBlock(Vector3 adjacentBlock) {
         int x = (int)adjacentBlock.x;
         int y = (int)adjacentBlock.y;
         int z = (int)adjacentBlock.z;
@@ -159,7 +159,7 @@ public class Chunk : MonoBehaviour {
         }        
     }
 
-    void BlockGen(Vector3 offset) {
+    private void BlockGen(Vector3 offset) {
         int x = (int)offset.x;
         int y = (int)offset.y;
         int z = (int)offset.z;
@@ -186,7 +186,7 @@ public class Chunk : MonoBehaviour {
         }
     }
 
-    void UVsGen(Vector2 textureCoordinate) {
+    private void UVsGen(Vector2 textureCoordinate) {
         Vector2 offset = new Vector2(
             0, 
             0
@@ -214,7 +214,7 @@ public class Chunk : MonoBehaviour {
         uv.Add(new Vector2(x + _x, y));
     }
 
-    void TrianglesGen() {
+    private void TrianglesGen() {
         // Primeiro Tiangulo
         triangles.Add(0 + vertexIndex);
         triangles.Add(1 + vertexIndex);
@@ -228,7 +228,7 @@ public class Chunk : MonoBehaviour {
         vertexIndex += 4;
     }
 
-    void VerticesGen(BlockSide side, Vector3 offset) {
+    private void VerticesGen(BlockSide side, Vector3 offset) {
         switch(side) {
             case BlockSide.EAST: {
                 vertices.Add(new Vector3(1, 0, 0) + offset);
@@ -285,7 +285,7 @@ public class Chunk : MonoBehaviour {
         UVsPositionsGen();
     }
 
-    void UVsPositionsGen() {
+    private void UVsPositionsGen() {
         // Pre-Classic | rd-132211
         
         // STONE

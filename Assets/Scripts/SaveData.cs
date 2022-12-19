@@ -3,31 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveData : MonoBehaviour {
-    void Start() {
+    private void Start() {
         Load();
     }
 
-    void Update() {
+    private void Update() {
         if(Input.GetButtonDown("Enter")) {
             Save();
 
             Debug.Log("Pressionou Enter");
         }
+
+        Save();
     }
 
-    public void Save() {
-        PlayerPrefs.SetFloat("x", transform.position.x);
-        PlayerPrefs.SetFloat("y", transform.position.y);
-        PlayerPrefs.SetFloat("z", transform.position.z);
+    private void Save() {
+        PlayerPrefs.SetFloat("playerPostionX", transform.position.x);
+        PlayerPrefs.SetFloat("playerPostionY", transform.position.y);
+        PlayerPrefs.SetFloat("playerPostionZ", transform.position.z);
+
+        float playerRotation = transform.rotation.eulerAngles.y;
+        PlayerPrefs.SetFloat("playerRotationY", playerRotation);
     }
 
-    public void Load() {
-        Vector3 Pos = new Vector3(
-            PlayerPrefs.GetFloat("x"),
-            PlayerPrefs.GetFloat("y"),
-            PlayerPrefs.GetFloat("z")
+    private void Load() {
+        Vector3 position = new Vector3(
+            PlayerPrefs.GetFloat("playerPostionX"),
+            PlayerPrefs.GetFloat("playerPostionY"),
+            PlayerPrefs.GetFloat("playerPostionZ")
         );
 
-        transform.position = Pos;
+        transform.position = position;
+
+        float playerRotation = PlayerPrefs.GetFloat("playerRotationY");
+        transform.rotation = Quaternion.Euler(0.0f, playerRotation, 0.0f);
     }
 }

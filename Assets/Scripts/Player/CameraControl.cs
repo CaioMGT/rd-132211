@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraControl : MonoBehaviour {
-    [SerializeField] Transform player;
+    [SerializeField] private Transform player;
 
-    float xRotation = 0;
+    private float xRotation = 0;
     
-    void Start() {
+    private void Start() {
+        transform.position = new Vector3(0.0f, 1.62f, 0.0f);
+
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update() {
+    private void Update() {
         CameraUpdates();
 
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void CameraUpdates() {
+    private void CameraUpdates() {
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 

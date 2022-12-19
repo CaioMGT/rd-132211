@@ -616,8 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7642a83a1ca6a4f9fb09609d28dd53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 536737050}
-  player: {fileID: 536737051}
+  characterController: {fileID: 536737051}
   groundCheck: {fileID: 60883817}
   groundMask:
     serializedVersion: 2

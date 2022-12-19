@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class World : MonoBehaviour {
-    [SerializeField] GameObject chunkPrefab;
+    [SerializeField] private GameObject chunkPrefab;
 
     public static Vector3Int WorldSizeInBlocks = new Vector3Int(
         256,
@@ -17,19 +17,19 @@ public class World : MonoBehaviour {
         WorldSizeInBlocks.z / Chunk.ChunkSize.z
     );
 
-    [SerializeField] Transform player;
+    [SerializeField] private Transform player;
 
-    int viewDistance = 5;
+    public static int viewDistance = 5;
 
-    void Start() {
+    private void Start() {
         InitialWorldGen();
     }
 
-    void Update() {
+    private void Update() {
         StartCoroutine(WorldGen());
     }
 
-    void InitialWorldGen() {
+    private void InitialWorldGen() {
         for(int x = -viewDistance; x < viewDistance; x++) {
             for(int y = 0; y < WorldSize.y; y++) {
                 for(int z = -viewDistance; z < viewDistance; z++) {
@@ -57,7 +57,7 @@ public class World : MonoBehaviour {
         //player.position = spawn;
     }
 
-    IEnumerator WorldGen() {
+    private IEnumerator WorldGen() {
         int posX = Mathf.FloorToInt(player.position.x / Chunk.ChunkSize.x);
         int posZ = Mathf.FloorToInt(player.position.z / Chunk.ChunkSize.z);
 

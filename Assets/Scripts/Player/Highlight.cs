@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Highlight : MonoBehaviour {
-    [SerializeField] GameObject highlight;
+    [SerializeField] private GameObject highlight;
         
-    MeshFilter meshFilter;
-    MeshRenderer meshRenderer;
+    private MeshFilter meshFilter;
+    private MeshRenderer meshRenderer;
     
-    Mesh mesh;
+    private Mesh mesh;
 
-    List<Vector3> vertices = new List<Vector3>();
-    List<int> triangles = new List<int>();
+    private List<Vector3> vertices = new List<Vector3>();
+    private List<int> triangles = new List<int>();
 
-    [SerializeField] Material material;
+    [SerializeField] private Material material;
 
-    [SerializeField] Transform cam;
-    float rangeHit = 5.0f;
-    [SerializeField] LayerMask groundMask;
+    [SerializeField] private Transform cam;
+    private float rangeHit = 5.0f;
+    [SerializeField] private LayerMask groundMask;
 
-    enum HighlighSide {
+    private enum HighlighSide {
         EAST,
         WEST,
         TOP,
@@ -28,9 +28,9 @@ public class Highlight : MonoBehaviour {
         SOUTH
     }
 
-    int verticesCount;
+    private int verticesCount;
     
-    void Start() {
+    private void Start() {
         meshFilter = (MeshFilter)highlight.AddComponent(typeof(MeshFilter));
         meshRenderer = (MeshRenderer)highlight.AddComponent(typeof(MeshRenderer));
 
@@ -41,12 +41,12 @@ public class Highlight : MonoBehaviour {
         MeshGen();
     }
 
-    void Update() {
+    private void Update() {
         HighlightUpdates();
         ColorUpdate();
     }
 
-    void ColorUpdate() {
+    private void ColorUpdate() {
         Color colorA = material.color;
         colorA.a = 0.5f;
 
@@ -59,7 +59,7 @@ public class Highlight : MonoBehaviour {
         meshRenderer.material.color = Color.Lerp(colorA, colorB, Mathf.PingPong(Time.time * speed, 1));
     }
 
-    void HighlightUpdates() {
+    private void HighlightUpdates() {
         RaycastHit hit;
 
         if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
@@ -78,7 +78,7 @@ public class Highlight : MonoBehaviour {
         }
     }
 
-    void MeshGen() {
+    private void MeshGen() {
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
 
@@ -89,7 +89,7 @@ public class Highlight : MonoBehaviour {
     }
 
     /*
-    bool PointBlock(Vector3 pointPos) {
+    private bool PointBlock(Vector3 pointPos) {
         RaycastHit hit;
 
         if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
@@ -103,7 +103,7 @@ public class Highlight : MonoBehaviour {
     }
     //*/
 
-    void HighlighGen() {
+    private void HighlighGen() {
         /*
         RaycastHit hit;
 
@@ -162,7 +162,7 @@ public class Highlight : MonoBehaviour {
         //*/
     }
 
-    void TrianglesGen() {
+    private void TrianglesGen() {
         // Primeiro Tiangulo
         triangles.Add(0 + verticesCount);
         triangles.Add(1 + verticesCount);
@@ -176,7 +176,7 @@ public class Highlight : MonoBehaviour {
         verticesCount += 4;
     }
 
-    void VerticesGen(HighlighSide side) {
+    private void VerticesGen(HighlighSide side) {
         switch(side) {
             case HighlighSide.EAST: {
                 vertices.Add(new Vector3(1, 0, 0));
