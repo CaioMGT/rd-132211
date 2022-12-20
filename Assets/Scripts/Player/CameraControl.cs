@@ -8,8 +8,6 @@ public class CameraControl : MonoBehaviour {
     private float xRotation = 0;
     
     private void Start() {
-        transform.position = new Vector3(0.0f, 1.62f, 0.0f);
-
         Cursor.lockState = CursorLockMode.Locked;
     }
 

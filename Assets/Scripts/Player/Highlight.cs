@@ -34,6 +34,7 @@ public class Highlight : MonoBehaviour {
         meshFilter = (MeshFilter)highlight.AddComponent(typeof(MeshFilter));
         meshRenderer = (MeshRenderer)highlight.AddComponent(typeof(MeshRenderer));
 
+        // Crie a malha
         mesh = new Mesh();
         mesh.name = "Highlight";
 
@@ -85,97 +86,20 @@ public class Highlight : MonoBehaviour {
         mesh.RecalculateNormals();
         mesh.Optimize();
 
+        // Adicione a malha ao MeshFilter do seu GameObject
         meshFilter.mesh = mesh;
     }
 
-    /*
-    private bool PointBlock(Vector3 pointPos) {
-        RaycastHit hit;
-
-        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
-            pointPos = hit.point - hit.normal / 2;
-
-            return false;
-        }
-        else {
-            return true;
-        }                  
-    }
-    //*/
-
     private void HighlighGen() {
-        /*
-        RaycastHit hit;
-
-        if(Physics.Raycast(cam.position, cam.forward, out hit, rangeHit, groundMask)) {
-            Vector3 pointPos = hit.point - hit.normal / 2;
-
-            if(pointPos == new Vector3(1, 0, 0)) {
-                VerticesGen(HighlighSide.EAST);
-            }
-            if(pointPos == new Vector3(-1, 0, 0)) {
-                VerticesGen(HighlighSide.WEST);
-            }
-            if(pointPos == new Vector3(0, 1, 0)) {
-                VerticesGen(HighlighSide.TOP);
-            }
-            if(pointPos == new Vector3(0, -1, 0)) {
-                VerticesGen(HighlighSide.BOTTOM);
-            }
-            if(pointPos == new Vector3(0, 0, 1)) {
-                VerticesGen(HighlighSide.NORTH);
-            }
-            if(pointPos == new Vector3(0, 0, -1)) {
-                VerticesGen(HighlighSide.SOUTH);
-            }
-        }   
-        */     
-        
-        /*
-        if(PointBlock(new Vector3(1, 0, 0))) {
-            VerticesGen(HighlighSide.EAST);
-        }
-        if(PointBlock(new Vector3(-1, 0, 0))) {
-            VerticesGen(HighlighSide.WEST);
-        }
-        if(PointBlock(new Vector3(0, 1, 0))) {
-            VerticesGen(HighlighSide.TOP);
-        }
-        if(PointBlock(new Vector3(0, -1, 0))) {
-            VerticesGen(HighlighSide.BOTTOM);
-        }
-        if(PointBlock(new Vector3(0, 0, 1))) {
-            VerticesGen(HighlighSide.NORTH);
-        }
-        if(PointBlock(new Vector3(0, 0, -1))) {
-            VerticesGen(HighlighSide.SOUTH);
-        }
-        */
-
-        //*
         VerticesGen(HighlighSide.EAST);
         VerticesGen(HighlighSide.WEST);
         VerticesGen(HighlighSide.TOP);
         VerticesGen(HighlighSide.BOTTOM);
         VerticesGen(HighlighSide.NORTH);
         VerticesGen(HighlighSide.SOUTH);
-        //*/
     }
 
-    private void TrianglesGen() {
-        // Primeiro Tiangulo
-        triangles.Add(0 + verticesCount);
-        triangles.Add(1 + verticesCount);
-        triangles.Add(2 + verticesCount);
-
-        // Segundo Triangulo
-        triangles.Add(0 + verticesCount);
-        triangles.Add(2 + verticesCount);
-        triangles.Add(3 + verticesCount);
-
-        verticesCount += 4;
-    }
-
+    // Adicione os Vertices da Malha
     private void VerticesGen(HighlighSide side) {
         switch(side) {
             case HighlighSide.EAST: {
@@ -229,5 +153,20 @@ public class Highlight : MonoBehaviour {
         }
 
         TrianglesGen();
+    }
+
+    // Adicone os Triangulos dos Vertices para renderizar a face
+    private void TrianglesGen() {
+        // Primeiro Tiangulo
+        triangles.Add(0 + verticesCount);
+        triangles.Add(1 + verticesCount);
+        triangles.Add(2 + verticesCount);
+
+        // Segundo Triangulo
+        triangles.Add(0 + verticesCount);
+        triangles.Add(2 + verticesCount);
+        triangles.Add(3 + verticesCount);
+
+        verticesCount += 4;
     }
 }

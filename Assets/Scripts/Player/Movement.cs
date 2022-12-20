@@ -5,7 +5,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour {
     [SerializeField] private CharacterController characterController;
 
-    private Vector3 moveDirection;
+    //private Vector3 moveDirection;
 
     private float speed;
 
@@ -29,8 +29,6 @@ public class Movement : MonoBehaviour {
     private float stepOffset = 1.0f;
 
     private void Start() {
-        CharacterControllerValues();
-
         speed = walkingSpeed;
     }
 
@@ -44,21 +42,13 @@ public class Movement : MonoBehaviour {
         //StepOffsetUpdate();
     }
 
-    private void CharacterControllerValues() {
-        // Se Step Offset for maior que 0.0f, o jogador não passara por uma altura de 2 blocos.
-        characterController.stepOffset = 0.0f;
-        characterController.center = new Vector3(0.0f, 0.9f, 0.0f);
-        characterController.radius = 0.3f;
-        characterController.height = 1.8f;
-    }
-
     private void MovementUpdate() {
         // Obtenha a entrada do usuário
         float x = Input.GetAxis("HorizontalAD");
         float z = Input.GetAxis("VerticalWS");
 
         // Crie um vetor de movimento na direção em que o jogador está olhando
-        moveDirection = transform.TransformDirection(new Vector3(x, 0.0f, z));
+        Vector3 moveDirection = transform.TransformDirection(new Vector3(x, 0.0f, z));
 
         // Ajuste a velocidade de movimento
         moveDirection *= speed;
@@ -116,7 +106,7 @@ public class Movement : MonoBehaviour {
         }
         else {
             // Se o raio não colidir com nenhum obstáculo, move o personagem normalmente
-            characterController.Move(moveDirection * Time.deltaTime);
+            //characterController.Move(moveDirection * Time.deltaTime);
         }
     }
 }
