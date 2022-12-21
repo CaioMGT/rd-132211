@@ -63,17 +63,19 @@ public class World : MonoBehaviour {
         for(int x = -viewDistance; x < viewDistance; x++) {
             for(int y = 0; y < WorldSize.y; y++) {
                 for(int z = -viewDistance; z < viewDistance; z++) {
+                    // Crie um Vector3 com o offset de chunk atual
                     Vector3 chunkOffset = new Vector3(
                         x * Chunk.ChunkSize.x,
                         y * Chunk.ChunkSize.y,
                         z * Chunk.ChunkSize.z
                     );
 
-                    int r2 = viewDistance * viewDistance;
+                    //int r2 = viewDistance * viewDistance;
 
-                    if(new Vector3(x, y, z).sqrMagnitude < r2) {
+                    // Gere as chunks de forma circular
+                    //if(new Vector3(x, y, z).sqrMagnitude < r2) {
                         Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
-                    }
+                    //}
                 }
             }
         }
@@ -102,22 +104,23 @@ public class World : MonoBehaviour {
                         y * Chunk.ChunkSize.y,
                         (z + posZ) * Chunk.ChunkSize.z
                     );
+
+                    Chunk c = Chunk.GetChunk(new Vector3(
+                        Mathf.FloorToInt(chunkOffset.x),
+                        Mathf.FloorToInt(chunkOffset.y),
+                        Mathf.FloorToInt(chunkOffset.z)
+                    ));
                     
                     // Verifique se o chunkOffset está presente no Dictionary
                     if(chunks.ContainsKey(chunkOffset)) {
-                        if(GameObject.Find("Chunk(" + (x + posX) + ", " + (z + posZ) + ")") == null) {
-                            int r2 = viewDistance * viewDistance;
-
-                            // Gere as chunks de forma circular
-                            if(new Vector3(x, y, z).sqrMagnitude < r2) {
-                                // Instancie o chunkPrefab usando as posições do Dictionary
-                                GameObject chunk = Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
-                                chunk.name = "Chunk(" + (x + posX) + ", " + (z + posZ) + ")";
-
-                                yield return null;
-                            }
+                        if(c == null) {
+                            // Instancie o chunkPrefab usando as posições do Dictionary
+                            GameObject chunk = Instantiate(chunkPrefab, chunkOffset, Quaternion.identity, this.transform);
+                            chunk.name = "Chunk(" + (x + posX) + ", " + (z + posZ) + ")";
                         }
                     }
+
+                    yield return null;
                 }
             }
         }

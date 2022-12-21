@@ -27,11 +27,7 @@ public class Chunk : MonoBehaviour {
         16
     );
 
-    private BlockType[,,] voxelMap = new BlockType[
-        (int)ChunkSize.x, 
-        (int)ChunkSize.y, 
-        (int)ChunkSize.z
-    ];
+    private Dictionary<Vector3, BlockType> voxelMap = new Dictionary<Vector3, BlockType>();
 
     private BlockType blockType;
 
@@ -54,7 +50,7 @@ public class Chunk : MonoBehaviour {
         int y = Mathf.FloorToInt(localPos.y);
         int z = Mathf.FloorToInt(localPos.z);
 
-        voxelMap[x, y, z] = b;
+        voxelMap[new Vector3(x, y, z)] = b;
 
         ChunkRenderer();
     }
@@ -98,12 +94,17 @@ public class Chunk : MonoBehaviour {
         
         // Gere a camada de Pedra
         if(_y < 32) {
-            voxelMap[x, y, z] = BlockType.stone;
+            voxelMap.Add(offset, BlockType.stone);
         }
 
         // Gere a camada de Grama
         else if(_y == 32) {
-            voxelMap[x, y, z] = BlockType.grass_block;
+            voxelMap.Add(offset, BlockType.grass_block);
+        }
+
+        // Gere a camada de Ar
+        else {
+            voxelMap.Add(offset, BlockType.air);
         }
     }
 
@@ -135,7 +136,7 @@ public class Chunk : MonoBehaviour {
         for(int x = 0; x < ChunkSize.x; x++) {
             for(int y = 0; y < ChunkSize.y; y++) {
                 for(int z = 0; z < ChunkSize.z; z++) {
-                    if(voxelMap[x, y, z] != BlockType.air) {
+                    if(voxelMap[new Vector3(x, y, z)] != BlockType.air) {
                         BlockGen(new Vector3(x, y, z));
                     }
                 }
@@ -172,7 +173,7 @@ public class Chunk : MonoBehaviour {
         ) {
             return false;
         }
-        if(voxelMap[x, y, z] == BlockType.air) {
+        if(voxelMap[adjacentBlock] == BlockType.air) {
             return false;
         }
         else {
@@ -181,12 +182,8 @@ public class Chunk : MonoBehaviour {
     }
 
     private void BlockGen(Vector3 offset) {
-        int x = (int)offset.x;
-        int y = (int)offset.y;
-        int z = (int)offset.z;
-
         // O tipo de bloco a ser renderizado é determinado pelo mapa de voxels
-        blockType = voxelMap[x, y, z];
+        blockType = voxelMap[offset];
 
         // Gere a Face do Leste se não houver um bloco em +x
         if(!HasAdjacentBlock(new Vector3(1, 0, 0) + offset)) {
